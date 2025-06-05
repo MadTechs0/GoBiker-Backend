@@ -1,4 +1,3 @@
-const { get } = require('mongoose');
 const communityRepo = require('../repositories/communityRepository');
 const S3 = require('./s3Service');
 
@@ -24,16 +23,50 @@ const getCommunities = async()=>{
     return communityRepo.getCommunities();
 }
 const getCommunityById = async(id)=>{
-    return communityRepo.getCommunityById(id);
+    try{
+        const community = await communityRepo.getCommunityById(id);
+        return addBannerAvatar(community);
+    }catch(err){
+
+    }
 }
 const getCommunitiesByName = async(name)=>{
     return communityRepo.getCommunitiesByName(name);
 }
 const myCommunities = async(userId)=>{
-    return communityRepo.myCommunities(userId);
+    try{
+        const communities = await communityRepo.myCommunities(userId);
+        return addBannerAvatar(communities);
+    }catch(err){
+
+    }
 }
 const recommendations = async(userId)=>{
-    return communityRepo.recommendations(userId);
+    try{
+        const communities = await communityRepo.recommendations(userId);
+        return addBannerAvatar(communities);
+    }catch(err){
+
+    }
+}
+const addBannerAvatar = async(input)=>{
+    try{
+        if (Array.isArray(input)) {
+            return Promise.all(
+              input.map(async (community) => {
+                community.bannerUrl = await S3.getPreSignedUrl('banner', community._id, 'get');
+                community.avatarUrl = await S3.getPreSignedUrl('avatar', community._id, 'get');
+                return community;
+              })
+            );
+          } else {
+            input.bannerUrl = await S3.getPreSignedUrl('banner', input._id, 'get');
+            input.avatarUrl = await S3.getPreSignedUrl('avatar', input._id, 'get');
+            return input;
+          }
+    }catch(err){
+
+    }
 }
 module.exports = {
     createCommunity,

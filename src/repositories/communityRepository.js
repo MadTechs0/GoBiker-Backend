@@ -23,7 +23,7 @@ const getCommunities = async() =>{
 }
 const getCommunityById = async(id) =>{
     try{
-        const community = await Community.findById(id);
+        const community = await Community.findById(id).lean();
         return community;
     }catch(err){
         return err;
@@ -39,7 +39,7 @@ const getCommunitiesByName = async(name) =>{
 }
 const myCommunities = async(userId)=>{
     try{
-        const communities = await Community.find({ownerId:userId});
+        const communities = await Community.find({ownerId:userId}).lean();
         return communities;
     }catch(err){
         return err;
@@ -48,10 +48,10 @@ const myCommunities = async(userId)=>{
 const recommendations = async(userId)=>{
     try{
         if(userId){
-            const communities = await Community.find({ ownerId: { $ne: userId } }, '_id name description members');
+            const communities = await Community.find({ ownerId: { $ne: userId } }, '_id name description members').lean();
             return communities;
         }else{
-            const communities = await Community.find();
+            const communities = await Community.find().lean();
             return communities;
         }
     }catch(err){

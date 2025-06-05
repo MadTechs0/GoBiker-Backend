@@ -15,6 +15,8 @@ router.get('/getProfileDetails', authenticate, profile.getProfileDetails);
 
 router.post('/createPost', authenticate, post.createPost);
 router.get('/communityPosts', post.communityPosts);
+router.get('/posts', post.postDetails);
+router.get('/comment', authenticate, post.addComment);
 
 router.post('/createCommunity', authenticate, community.createCommunity);
 router.get('/checkCommunityName', authenticate, community.checkNameAvailability);

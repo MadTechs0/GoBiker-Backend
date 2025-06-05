@@ -6,7 +6,7 @@ const createUser = async(userData) => {
     return await user.save();
 };
 const userDetails = async(id) =>{
-    return await User.findById(id).select('name userName email phone');
+    return await User.findById(id).select('name userName email phone').lean();
 }
 const checkUsernameAvailability = async(userName)=>{
     const user = await User.findOne({userName:userName});
