@@ -8,9 +8,17 @@ const createUser = async(userData) => {
 const userDetails = async(id) =>{
     return await User.findById(id).select('name userName email phone');
 }
-
+const checkUsernameAvailability = async(userName)=>{
+    const user = await User.findOne({userName:userName});
+    if(user){
+        return false;
+    }else{
+        return true;
+    }
+}
 module.exports = {
     findByEmail,
     createUser,
-    userDetails
+    userDetails,
+    checkUsernameAvailability
 };

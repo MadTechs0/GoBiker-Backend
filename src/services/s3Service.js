@@ -1,12 +1,17 @@
-const { PutObjectCommand, S3Client } = require("@aws-sdk/client-s3");
+const { PutObjectCommand, S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 const {
   getSignedUrl,
   S3RequestPresigner,
 } = require( "@aws-sdk/s3-request-presigner");
-const getPreSignedUrl = async(key, contentId) =>{    
+const getPreSignedUrl = async(key, contentId, command) =>{    
     try{ 
         const client = new S3Client({ region:process.env.AWS_REGION});
-        const command = new PutObjectCommand({ Bucket: process.env.AWS_BUCKET_NAME, Key: `${key}/${contentId}` });
+        if(command == 'get'){
+            command = new PutObjectCommand({ Bucket: process.env.AWS_BUCKET_NAME, Key: `${key}/${contentId}` });
+        }
+        if(command == 'put'){
+            command = new GetObjectCommand({ Bucket: process.env.AWS_BUCKET_NAME, Key: `${key}/${contentId}` });
+        }
         const url = getSignedUrl(client, command, { expiresIn: 3600 });
         return url;
         

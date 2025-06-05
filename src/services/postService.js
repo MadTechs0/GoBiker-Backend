@@ -8,7 +8,7 @@ const createPost = async(req, res) => {
         if(!postId){
             return res.status(500).json({message:'Error uploading post'});
         }
-        const preSignedUrl = await S3.getPreSignedUrl('posts', postId);
+        const preSignedUrl = await S3.getPreSignedUrl('posts', postId, 'put');
 
         return res.status(200).json(preSignedUrl);
         
